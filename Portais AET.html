@@ -1,0 +1,241 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Portais AET</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap">
+<style>
+/* Layout: coluna única estreita, botões em grade de 2 colunas, assistente de IA abaixo */
+:root {
+  --bg: #F3F5F2;
+  --surface: #FFFFFF;
+  --fg: #17211E;
+  --muted: #5B6862;
+  --line: #D8DED9;
+  --accent: #14684F;
+  --accent-fg: #FFFFFF;
+  --tag: #F2C230;
+  --tag-fg: #2A2200;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1613; --surface: #17211D; --fg: #E8EEEA; --muted: #9AA8A1;
+    --line: #2A3732; --accent: #3FB58F; --accent-fg: #06130E;
+    --tag: #E3B422; --tag-fg: #1E1700; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1613; --surface: #17211D; --fg: #E8EEEA; --muted: #9AA8A1;
+  --line: #2A3732; --accent: #3FB58F; --accent-fg: #06130E;
+  --tag: #E3B422; --tag-fg: #1E1700; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.5;
+  padding-block: 28px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+main { max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+h1 { font-family: var(--font-display); font-size: 1.6rem; line-height: 1.15; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.sub { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.site {
+  display: flex; flex-direction: column; gap: 10px; justify-content: space-between;
+  min-height: 92px; padding: 12px 14px; text-decoration: none; color: var(--fg);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  transition: border-color .15s, transform .15s;
+}
+.site:hover { border-color: var(--accent); }
+.site:active { transform: scale(0.98); }
+.site:focus-visible, button:focus-visible, textarea:focus-visible, .chip:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.uf {
+  align-self: flex-start; font-family: var(--font-display); font-weight: 700; font-size: 0.8rem;
+  letter-spacing: 0.08em; padding: 2px 8px; border-radius: 4px; background: var(--tag); color: var(--tag-fg);
+}
+.name { font-weight: 600; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.name span:last-child { color: var(--accent); font-size: 1rem; }
+.sub-name { display: block; font-weight: 400; font-size: 0.78rem; color: var(--muted); }
+
+.ai { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.ai h2 { font-family: var(--font-display); font-size: 1.05rem; margin: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font: inherit; font-size: 0.8rem; color: var(--fg); background: transparent;
+  border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; cursor: pointer;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+.log { display: flex; flex-direction: column; gap: 10px; }
+.msg { padding: 9px 12px; border-radius: 10px; white-space: pre-wrap; overflow-wrap: anywhere; min-width: 0; }
+.msg.user { align-self: flex-end; background: var(--accent); color: var(--accent-fg); max-width: 88%; }
+.msg.bot { align-self: flex-start; background: var(--bg); border: 1px solid var(--line); max-width: 100%; }
+.msg.err { color: var(--muted); font-size: 0.88rem; }
+form { display: flex; gap: 8px; align-items: flex-end; }
+textarea {
+  flex: 1; min-width: 0; resize: none; font: inherit; color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; min-height: 42px; max-height: 120px;
+}
+.send {
+  font: inherit; font-weight: 600; background: var(--accent); color: var(--accent-fg);
+  border: 0; border-radius: 8px; padding: 0 16px; height: 42px; cursor: pointer;
+}
+.send:disabled { opacity: .5; cursor: default; }
+.note { color: var(--muted); font-size: 0.78rem; margin: 0; }
+@media (prefers-reduced-motion: reduce) { .site { transition: none; } }
+</style>
+
+<main>
+  <header>
+    <h1>Portais AET</h1>
+    <p class="sub">Autorização Especial de Trânsito. Escolha o órgão.</p>
+  </header>
+
+  <nav class="grid" aria-label="Portais AET">
+    <a class="site" href="https://siaet.dnit.gov.br" target="_blank" rel="noopener">
+      <span class="uf">DNIT</span>
+      <span class="name"><span>SIAET<span class="sub-name">Rodovias federais</span></span><span aria-hidden="true">↗</span></span>
+    </a>
+    <a class="site" href="https://plug.der.pe.gov.br/?next=/" target="_blank" rel="noopener">
+      <span class="uf">PE</span>
+      <span class="name"><span>DER-PE<span class="sub-name">Plug</span></span><span aria-hidden="true">↗</span></span>
+    </a>
+    <a class="site" href="https://app.der.sp.gov.br/viadigital/" target="_blank" rel="noopener">
+      <span class="uf">SP</span>
+      <span class="name"><span>DER-SP<span class="sub-name">Via Digital</span></span><span aria-hidden="true">↗</span></span>
+    </a>
+    <a class="site" href="https://aetespecial.detran.ce.gov.br/" target="_blank" rel="noopener">
+      <span class="uf">CE</span>
+      <span class="name"><span>DETRAN-CE<span class="sub-name">AET Especial</span></span><span aria-hidden="true">↗</span></span>
+    </a>
+    <a class="site" href="https://sider.infraestrutura.ba.gov.br/aet/efetuarLogout.do" target="_blank" rel="noopener">
+      <span class="uf">BA</span>
+      <span class="name"><span>SIDER<span class="sub-name">Infraestrutura BA</span></span><span aria-hidden="true">↗</span></span>
+    </a>
+    <a class="site" href="https://portalaet.goinfra.go.gov.br/portalaet/abrirConRequerimento.do" target="_blank" rel="noopener">
+      <span class="uf">GO</span>
+      <span class="name"><span>Goinfra<span class="sub-name">Portal AET</span></span><span aria-hidden="true">↗</span></span>
+    </a>
+  </nav>
+
+  <section class="ai" aria-labelledby="ai-title">
+    <h2 id="ai-title">Assistente</h2>
+    <div class="chips" id="chips">
+      <button type="button" class="chip">Qual portal uso para rota PE → CE?</button>
+      <button type="button" class="chip">Que documentos costumam ser pedidos?</button>
+      <button type="button" class="chip">Qual a diferença entre AET e AETC?</button>
+    </div>
+    <div class="log" id="log" aria-live="polite"></div>
+    <form id="form">
+      <textarea id="q" rows="1" placeholder="Pergunte sobre AET, rotas ou portais" aria-label="Sua pergunta"></textarea>
+      <button class="send" id="send" type="submit">Enviar</button>
+    </form>
+    <p class="note" id="note">As respostas são orientações gerais. Confirme regras e prazos no portal do órgão.</p>
+  </section>
+</main>
+
+<script>
+(function () {
+  var PORTAIS = [
+    "SIAET (DNIT): rodovias federais, qualquer estado",
+    "Plug (DER-PE): rodovias estaduais de Pernambuco",
+    "Via Digital (DER-SP): rodovias estaduais de São Paulo",
+    "AET Especial (DETRAN-CE): Ceará",
+    "SIDER (Secretaria de Infraestrutura da Bahia): Bahia",
+    "Portal AET (Goinfra): Goiás"
+  ];
+  var INSTRUCOES =
+    "Você é o assistente de um app com atalhos para portais de AET (Autorização Especial de Trânsito) de cargas e veículos especiais no Brasil. " +
+    "Portais disponíveis no app: " + PORTAIS.join("; ") + ". " +
+    "Responda em português do Brasil, em no máximo 6 linhas, de forma direta. " +
+    "Quando fizer sentido, indique qual portal usar pelo trecho da rota (federal x estadual). " +
+    "Não invente prazos, valores, artigos de lei ou números de resolução; se não tiver certeza, diga isso e oriente a confirmar no portal do órgão ou na resolução vigente do CONTRAN.";
+
+  var log = document.getElementById("log");
+  var form = document.getElementById("form");
+  var q = document.getElementById("q");
+  var send = document.getElementById("send");
+  var note = document.getElementById("note");
+  var chips = document.getElementById("chips");
+  var history = [];
+  var sample = null;
+  var busy = false;
+
+  function add(cls, text) {
+    var d = document.createElement("div");
+    d.className = "msg " + cls;
+    d.textContent = text;
+    log.appendChild(d);
+    return d;
+  }
+
+  function setBusy(v) { busy = v; send.disabled = v; }
+
+  function disableAI(msg) {
+    q.disabled = true; send.disabled = true;
+    chips.hidden = true;
+    note.textContent = msg;
+  }
+
+  function ask(text) {
+    text = (text || "").trim();
+    if (!text || busy) return;
+    if (!sample) { add("bot err", "O assistente ainda não está disponível. Tente de novo em instantes."); return; }
+    add("user", text);
+    history.push({ role: "user", content: text });
+    q.value = ""; q.style.height = "auto";
+    chips.hidden = true;
+    var out = add("bot", "Pensando...");
+    setBusy(true);
+
+    var messages = history.map(function (m, i) {
+      return i === 0 ? { role: "user", content: INSTRUCOES + "\n\nPergunta: " + m.content } : m;
+    });
+
+    sample(messages, {
+      cache: false,
+      modelTier: "quick",
+      onText: function (e) { out.textContent = e.text; }
+    }).then(function (r) {
+      out.textContent = r.text;
+      history.push({ role: "assistant", content: r.text });
+    }).catch(function (err) {
+      history.pop();
+      out.className = "msg bot err";
+      if (err && err.code === "not_granted") {
+        out.textContent = "Permissão negada. Os botões dos portais continuam funcionando.";
+        disableAI("Assistente desativado: permissão não concedida.");
+      } else if (err && err.code === "rate_limited") {
+        out.textContent = "Muitas perguntas seguidas. Aguarde um pouco e tente de novo.";
+      } else {
+        out.textContent = "Não consegui responder agora. Tente de novo.";
+      }
+    }).then(function () { setBusy(false); });
+  }
+
+  form.addEventListener("submit", function (e) { e.preventDefault(); ask(q.value); });
+  q.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); ask(q.value); }
+  });
+  q.addEventListener("input", function () {
+    q.style.height = "auto";
+    q.style.height = Math.min(q.scrollHeight, 120) + "px";
+  });
+  chips.addEventListener("click", function (e) {
+    var b = e.target.closest(".chip");
+    if (b) ask(b.textContent);
+  });
+
+  if (window.claude && window.claude.use) {
+    window.claude.use("sample").then(function (s) {
+      if (s) { sample = s; } else { disableAI("Assistente indisponível nesta visualização. Os atalhos dos portais funcionam normalmente."); }
+    }).catch(function () {
+      disableAI("Assistente indisponível nesta visualização. Os atalhos dos portais funcionam normalmente.");
+    });
+  } else {
+    disableAI("Assistente indisponível nesta visualização. Os atalhos dos portais funcionam normalmente.");
+  }
+})();
+</script>
+
+</body></html>
